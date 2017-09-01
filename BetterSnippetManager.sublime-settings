@@ -1,10 +1,11 @@
 {
-    // set to true to use User\Snippets folder as base folder for newly created snippets
+    // set to true to use User/Snippets folder as base folder for newly created snippets
 
     "use_sublime_snippets_folder_as_base_folder": true,
 
-    // default snippet folder, if left empty the name will be generated from current scope
-    // set to 'null' and above to 'true' to use the default folder (User/Snippets)
+    // default snippet subfolder, if left empty the name will be generated from
+    // current scope; set to 'null' and above to 'true' to use the default
+    // folder (User/Snippets) without scope subfolder
 
     "snippets_folder": "",
 

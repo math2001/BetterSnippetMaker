@@ -59,6 +59,8 @@ class BetterSnippetManagerEditCommand(sublime_plugin.WindowCommand):
         snippets_folder = get_settings().get('snippets_folder')
         extension = get_snippet_extension()
         self.SNIPPETS_PATH = os.path.join(sublime.packages_path(), 'User')
+        if get_settings().get('use_sublime_snippets_folder_as_base_folder'):
+            self.SNIPPETS_PATH = os.path.join(self.SNIPPETS_PATH, "Snippets")
 
         self.all_snippets = self.__list_all_snippets(self.SNIPPETS_PATH, [], extension)
         if len(self.all_snippets) == 0:
