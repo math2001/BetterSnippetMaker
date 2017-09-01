@@ -59,8 +59,6 @@ class BetterSnippetManagerEditCommand(sublime_plugin.WindowCommand):
         snippets_folder = get_settings().get('snippets_folder')
         extension = get_snippet_extension()
         self.SNIPPETS_PATH = os.path.join(sublime.packages_path(), 'User')
-        if snippets_folder:
-            self.SNIPPETS_PATH = os.path.join(self.SNIPPETS_PATH, snippets_folder)
 
         self.all_snippets = self.__list_all_snippets(self.SNIPPETS_PATH, [], extension)
         if len(self.all_snippets) == 0:
@@ -98,6 +96,28 @@ class BetterSnippetManagerCreateCommand(sublime_plugin.TextCommand):
     def set_scopes(self, scopes):
         self.scopes = self.escape(scopes)
         folder = self.scopes.split(' ')[0].split('.')[-1]
+
+        user_folder = get_settings().get('snippets_folder')
+        use_base_folder = get_settings().get('use_sublime_snippets_folder_as_base_folder')
+
+        # use base folder + custom folder
+        if use_base_folder and user_folder:
+            folder = os.path.join("Snippets", user_folder)
+
+        # use base folder only
+        elif use_base_folder and user_folder is None:
+            folder = "Snippets"
+
+        # use base folder + scope folder
+        elif use_base_folder:
+            folder = os.path.join("Snippets", folder)
+
+        # use custom folder
+        elif user_folder:
+            folder = user_folder
+
+        # otherwise leave folder variable unchanged and use scope folder
+
         view = self.window.show_input_panel('Folder: ', folder, self.set_folder, None, None)
 
     def set_folder(self, folder):
@@ -121,7 +141,6 @@ class BetterSnippetManagerCreateCommand(sublime_plugin.TextCommand):
             template = templates.xml
 
         file_path = os.path.join(sublime.packages_path(), 'User',
-                                 get_settings().get('snippets_folder') or '',
                                  computer_friendly(self.folder), file_name)
 
         if not os.path.exists(os.path.dirname(file_path)):

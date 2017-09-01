@@ -1,9 +1,15 @@
 {
-    // which folder you want to store all your snippets in
-    // it can be set to null
-    "snippets_folder": "snippets",
+    // set to true to use User\Snippets folder as base folder for newly created snippets
+
+    "use_sublime_snippets_folder_as_base_folder": true,
+
+    // default snippet folder, if left empty the name will be generated from current scope
+    // set to 'null' and above to 'true' to use the default folder (User/Snippets)
+
+    "snippets_folder": "",
 
     // SaneSnippet is a package which allows you to write your snippet
     // with a yaml front matter. Check it out!
+
     "use_sane_snippets": false
 }
