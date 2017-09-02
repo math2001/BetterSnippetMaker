@@ -59,8 +59,8 @@ class BetterSnippetManagerEditCommand(sublime_plugin.WindowCommand):
         snippets_folder = get_settings().get('snippets_folder')
         extension = get_snippet_extension()
         self.SNIPPETS_PATH = os.path.join(sublime.packages_path(), 'User')
-        if snippets_folder:
-            self.SNIPPETS_PATH = os.path.join(self.SNIPPETS_PATH, snippets_folder)
+        if get_settings().get('use_sublime_snippets_folder_as_base_folder'):
+            self.SNIPPETS_PATH = os.path.join(self.SNIPPETS_PATH, "Snippets")
 
         self.all_snippets = self.__list_all_snippets(self.SNIPPETS_PATH, [], extension)
         if len(self.all_snippets) == 0:
@@ -97,7 +97,24 @@ class BetterSnippetManagerCreateCommand(sublime_plugin.TextCommand):
 
     def set_scopes(self, scopes):
         self.scopes = self.escape(scopes)
-        folder = self.scopes.split(' ')[0].split('.')[-1]
+
+        scope_folder = self.scopes.split(' ')[0].split('.')[-1]
+        user_folder = get_settings().get('snippets_folder')
+        base_folder = "Snippets" if get_settings(
+            ).get('use_sublime_snippets_folder_as_base_folder') else ""
+
+        # use base folder + user_folder + scope folder
+        if get_settings().get('use_scope_subfolder'):
+            folder = os.path.join(base_folder, user_folder, scope_folder)
+
+        # use base folder only
+        elif not user_folder:
+            folder = base_folder
+
+        # use base folder + custom folder
+        else:
+            folder = os.path.join(base_folder, user_folder)
+
         view = self.window.show_input_panel('Folder: ', folder, self.set_folder, None, None)
 
     def set_folder(self, folder):
@@ -121,7 +138,6 @@ class BetterSnippetManagerCreateCommand(sublime_plugin.TextCommand):
             template = templates.xml
 
         file_path = os.path.join(sublime.packages_path(), 'User',
-                                 get_settings().get('snippets_folder') or '',
                                  computer_friendly(self.folder), file_name)
 
         if not os.path.exists(os.path.dirname(file_path)):
