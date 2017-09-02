@@ -107,6 +107,10 @@ class BetterSnippetManagerCreateCommand(sublime_plugin.TextCommand):
         if get_settings().get('use_scope_subfolder'):
             folder = os.path.join(base_folder, user_folder, scope_folder)
 
+        # use base folder only
+        elif not user_folder:
+            folder = base_folder
+
         # use base folder + custom folder
         else:
             folder = os.path.join(base_folder, user_folder)
